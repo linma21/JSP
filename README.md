@@ -24,6 +24,22 @@
 | sub3. 스크립트 요소
 
 ## **Ch03. JSP 내장객체**  
+| sub1. 내장객체
+
+| sub2. request 객체
+
+| sub3. response 객체
+
+| sub4. pageContext 객체
+
+| sub5. application 객체
+
+| sub6. session 객체
+
+| sub7. exception 객체
+
+| sub8. 내장객체 영역
+
 ## **Ch04. JSP 액션태그**  
 ## **Ch05. 쿠키와 세션**  
 ## **Ch06. JSP 데이터베이스**  
