@@ -63,8 +63,8 @@
 				<td><%= dto.getBirth() %></td>
 				<td><%=dto.getAddr() %></td>
 				<td>
-					<a href="./modify.jsp?`uid`=?">수정</a>
-					<a href="./delete.jsp">삭제</a>
+					<a href="./modify.jsp?uid=<%=dto.getUid()%>">수정</a>
+					<a href="./delete.jsp?uid=<%=dto.getUid()%>">삭제</a>
 				</td>
 				<%} %>
 			</tr>
