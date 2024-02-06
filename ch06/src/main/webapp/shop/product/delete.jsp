@@ -26,5 +26,5 @@
 	}catch(Exception e){
 		e.printStackTrace();
 	}
-	response.sendRedirect("/ch06/product/list.jsp");
+	response.sendRedirect("./list.jsp");
 %>

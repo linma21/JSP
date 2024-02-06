@@ -10,7 +10,7 @@
 	request.setCharacterEncoding("UTF-8");
 	
 	String proNo = request.getParameter("proNo");
-	ProductDTO dto = new ProductDTO();
+	ProductDTO dto = null;
 	
 	try{
 		Context initCtx = new InitialContext();
@@ -26,6 +26,7 @@
 
 		
 		if(rs.next()){
+			dto = new ProductDTO();
 			dto.setProNo(rs.getInt(1));
 			dto.setProdName(rs.getString(2));
 			dto.setStock(rs.getInt(3));

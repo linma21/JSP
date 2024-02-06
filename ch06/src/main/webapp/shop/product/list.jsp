@@ -69,8 +69,8 @@
                 <td><%= dto.getPrice() %></td>
                 <td><%= dto.getCompany() %></td>
                 <td>
-                    <a href="./modify.jsp?custId=<%= dto.getProNo() %>">수정</a>
-                    <a href="./delete.jsp?custId=<%= dto.getProNo() %>">삭제</a>
+                    <a href="./modify.jsp?proNo=<%= dto.getProNo() %>">수정</a>
+                    <a href="./delete.jsp?proNo=<%= dto.getProNo() %>">삭제</a>
                 </td>
             </tr>
         <% } %>

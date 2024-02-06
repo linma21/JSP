@@ -10,7 +10,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	
-	String custId=request.getParameter("custid");
+	String custId=request.getParameter("custId");
 	
 	CustomerDTO dto= null;
 	
@@ -21,7 +21,7 @@
 		DataSource ds = (DataSource)ctx.lookup("jdbc/shop");
 		Connection conn= ds.getConnection();
 		
-		String sql="select * from `customer` where `custid`=?";
+		String sql="select * from `customer` where `custId`=?";
 		
 		PreparedStatement psmt= conn.prepareStatement(sql);
 		psmt.setString(1,custId);
@@ -61,7 +61,7 @@
 	<table border="1">
 		<tr>
 			<td>아이디</td>
-			<td><input type="text" name="custid" readonly value="<%=dto.getCustId() %>"></td>
+			<td><input type="text" name="custId" readonly value="<%=dto.getCustId() %>"></td>
 		</tr>	
 		
 		<tr>
