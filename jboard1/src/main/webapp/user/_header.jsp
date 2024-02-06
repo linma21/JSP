@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>login</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="/jboard1/css/style.css">
 </head>
 <body>
   <div id="container">

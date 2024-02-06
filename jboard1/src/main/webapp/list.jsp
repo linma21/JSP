@@ -1,3 +1,7 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.List"%>
+<%@page import="kr.co.jboard1.dto.ArticleDTO"%>
+<%@page import="kr.co.jboard1.dao.ArticleDAO"%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="./_header.jsp"%>
 <main>
@@ -12,13 +16,18 @@
 					<th>날짜</th>
 					<th>조회</th>
 				</tr>
+				<%  
+					List<ArticleDTO> articles =ArticleDAO.getInstance().selectArticles();
+					for(ArticleDTO dto : articles){
+				%>
 				<tr>
-					<td>1</td>
-					<td><a href="#">테스트 제목 1 입니다</a>[3]</td>
-					<td>길동이</td>
-					<td>24-01-29</td>
-					<td>12</td>
+					<td><%=dto.getNo() %></td>
+					<td><a href="#"><%=dto.getTitle() %></a>[<%=dto.getComment()%>]</td>
+					<td><%=dto.getNick() %></td>
+					<td><%=new SimpleDateFormat("yy-MM-dd").format(dto.getRdate()) %></td>
+					<td><%=dto.getHit() %></td>
 				</tr>
+				<% } %>
 			</table>
 		</article>
 
@@ -31,7 +40,7 @@
 
 		</div>
 		<div>
-			<a href="#" class="btnWrite">글쓰기</a>
+			<a href="/jboard1/write.jsp" class="btnWrite">글쓰기</a>
 		</div>
 	</section>
 </main>

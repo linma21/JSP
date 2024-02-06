@@ -3,7 +3,7 @@ package kr.co.jboard1.db;
 public class SQL {
 
 	public static final String SELECT_TERMS = "SELECT * FROM `terms`";
-	public static final String INSERT_USER = "INSERT INTO `User` SET "
+	public static final String INSERT_USER  = "INSERT INTO `User` SET "
 												+ "`uid` =?, "
 												+ "`pass` =SHA2(?, 256), "
 												+ "`name` =?, "
@@ -12,4 +12,17 @@ public class SQL {
 												+ "`hp` =?, "
 												+ "`regip` =?, "
 												+ "`rdate` =NOW() ";
+	
+	public static final String SELECT_USER_FOR_LOGIN = "SELECT * FROM `User` WHERE `uid`=? AND `pass`=SHA2(?, 256)";
+	
+	public static final String INSERT_ARTICLE = "INSERT INTO `Article` SET "
+													+"`title` =?, "
+													+"`content` =?, "
+													+"`writer` =?, "
+													+"`regip` =?, "
+													+"`rdate` =NOW() ";
+	
+	public static final String SELECT_ARTICLE_LIST = "SELECT `no`,`title`,`comment`,"
+													+ "`nick`,a.`rdate`,`hit` FROM `Article` "
+													+ "AS a JOIN `User` AS b ON a.writer=b.uid";
 }
