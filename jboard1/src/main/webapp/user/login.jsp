@@ -2,7 +2,7 @@
 <%@ include file="./_header.jsp" %>
 <main>
     <section class="login">
-        <form action="/jboard1/proc/loginProc.jsp" method="post">
+        <form action="/jboard1/user/proc/loginProc.jsp" method="post">
             <table border="0">
                 <tr>
                     <td><img src="/jboard1/images/login_ico_id.png" alt="아이디"></td>

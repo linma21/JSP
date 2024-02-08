@@ -1,8 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	Boolean agree = (Boolean) session.getAttribute("agree");
+	if(agree == null){
+		response.sendRedirect("/jboard1/user/terms.jsp");
+		return;
+	}
+	
+%>
 <%@ include file="./_header.jsp" %>
       <main>
         <section class="register">
-          <form action="/jboard1/proc/registerProc.jsp" method="post">
+          <form action="/jboard1/user/proc/registerProc.jsp" method="post">
             <table border="0">
               <caption>
                 사이트 이용정보 입력

@@ -6,9 +6,7 @@
 	String no = request.getParameter("no");
 	ArticleDTO article = ArticleDAO.getInstance().selectArticle(no);
 	
-	int noIntValue = article.getNo();
-	no = String.valueOf(noIntValue);
-	
 		ArticleDAO.getInstance().deleteArticle(no);
+		
 		response.sendRedirect("/jboard1/list.jsp");
 %>

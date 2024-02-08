@@ -1,6 +1,5 @@
 package kr.co.jboard1.dto;
 
-import java.util.Date;
 
 public class ArticleDTO {
 	private int no;
@@ -13,7 +12,7 @@ public class ArticleDTO {
 	private int hit;
 	private String writer;
 	private String regip;
-	private Date rdate;
+	private String rdate;
 	
 	private String nick;
 	
@@ -29,11 +28,17 @@ public class ArticleDTO {
 	public void setNo(int no) {
 		this.no = no;
 	}
+	public void setNo(String no) {
+		this.no = Integer.parseInt(no);
+	}
 	public int getParent() {
 		return parent;
 	}
 	public void setParent(int parent) {
 		this.parent = parent;
+	}
+	public void setParent(String parent) {
+		this.parent = Integer.parseInt(parent);
 	}
 	public int getComment() {
 		return comment;
@@ -65,6 +70,9 @@ public class ArticleDTO {
 	public void setFile(int file) {
 		this.file = file;
 	}
+	public void setFile(String file) {
+		this.file = Integer.parseInt(file);
+	}
 	public int getHit() {
 		return hit;
 	}
@@ -83,10 +91,10 @@ public class ArticleDTO {
 	public void setRegip(String regip) {
 		this.regip = regip;
 	}
-	public Date getRdate() {
+	public String getRdate() {
 		return rdate;
 	}
-	public void setRdate(Date rdate) {
+	public void setRdate(String rdate) {
 		this.rdate = rdate;
 	}
 	@Override

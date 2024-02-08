@@ -62,7 +62,7 @@
 					<td><%=pageStartNum-- %></td>
 					<td><a href="/jboard1/view.jsp?no=<%= article.getNo() %>"><%=article.getTitle() %></a>[<%=article.getComment()%>]</td>
 					<td><%=article.getNick() %></td>
-					<td><%=new SimpleDateFormat("yy-MM-dd").format(article.getRdate()) %></td>
+					<td><%=article.getRdate().substring(2, 10) %></td>
 					<td><%=article.getHit() %></td>
 				</tr>
 				<% } %>
