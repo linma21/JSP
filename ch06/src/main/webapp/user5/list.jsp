@@ -21,9 +21,9 @@
 		Statement stmt = conn.createStatement();
 		
 		ResultSet rs = stmt.executeQuery("SELECT * FROM `User5`");
-		User5DTO dto = null;
+		
 		while(rs.next()){
-			dto = new User5DTO();
+			User5DTO dto = new User5DTO();
 			dto.setSeq(rs.getInt(1));
 			dto.setName(rs.getString(2));
 			dto.setGender(rs.getString(3));
@@ -67,11 +67,11 @@
 				<td><%= dto.getAge() %></td>
 				<td><%= dto.getAddr() %></td>
 				<td>
-					<a href="/ch06/user4/modify.jsp?uid=<%= dto.getSeq()%>">수정</a>
-					<a href="/ch06/user4/delete.jsp?uid=<%= dto.getSeq()%>">삭제</a>
+					<a href="/ch06/user5/modify.jsp?seq=<%= dto.getSeq()%>">수정</a>
+					<a href="/ch06/user5/delete.jsp?seq=<%= dto.getSeq()%>">삭제</a>
 				</td>
-				<%} %>
 			</tr>
+			<%} %>
 		</table>
 	</body>
 </html>
