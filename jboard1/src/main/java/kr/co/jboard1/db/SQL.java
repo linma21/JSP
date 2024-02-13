@@ -39,6 +39,7 @@ public class SQL {
 													+ "`email` =?, "
 													+ "`hp` =?, "
 													+ "`regip` =?, "
+													+ "`sms` =?, "
 													+ "`rdate` =NOW() ";
 	public static final String INSERT_COMMENT = "INSERT INTO `Article` SET "
 												+ "`parent` =?, "
@@ -58,8 +59,9 @@ public class SQL {
 												+ "`file`=? "
 												+ "WHERE `no`=?";
 	
+	public static final String UPDATE_COMMENT 	= "UPDATE `Article` SET `content`= ? WHERE `no` =?";
 	public static final String UPDATE_HIT_COUNT = "UPDATE `Article` SET `hit` = `hit` +1 WHERE `no`= ?";
 	public static final String UPDATE_COMMENT_PLUS = "UPDATE `Article` SET `comment`= `comment`+1 WHERE `no` =?";
 	public static final String UPDATE_COMMENT_MINUS = "UPDATE `Article` SET `comment`= `comment`-1 WHERE `no` =?";
-	public static final String UPDATE_COMMENT 	= "UPDATE `Article` SET `content`= ? WHERE `no` =?";
+	
 }

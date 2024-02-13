@@ -4,34 +4,37 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	String no = request.getParameter("no");
-	ArticleDTO article = ArticleDAO.getInstance().selectArticle(no);
+	
+	ArticleDAO dao = ArticleDAO.getInstance();
+	ArticleDTO article = dao.selectArticle(no);
 	
 %>
 <%@ include file="./_header.jsp" %>
     <main>
       <section class="modify">
         <h3>글수정</h3>
-        <form action="/jboard1/proc/modifyProc.jsp?no=<%= article.getNo() %>" method="post">
-        <table>
-          <tr>
-            <td>제목</td>
-            <td>
-              <input type="text" name="title" placeholder="제목을 입력하세요." value="<%= article.getTitle() %>">
-            </td>
-          </tr>
-          <tr>
-            <td>내용</td>
-            <td>
-              <textarea name="content" value="<%= article.getContent() %>"></textarea>
-            </td>
-          </tr>
-          <tr>
-            <td>첨부</td>
-            <td>
-              <input type="file" name="file" value="<%= article.getFile() %>">
-            </td>
-          </tr>
-        </table>
+        <form action="/jboard1/proc/modifyProc.jsp" method="post">
+	        <input type="hidden" name=no value=<%= article.getNo() %>>
+	        <table>
+	          <tr>
+	            <td>제목</td>
+	            <td>
+	              <input type="text" name="title" placeholder="제목을 입력하세요." value="<%= article.getTitle() %>">
+	            </td>
+	          </tr>
+	          <tr>
+	            <td>내용</td>
+	            <td>
+	              <textarea name="content"><%= article.getContent() %></textarea>
+	            </td>
+	          </tr>
+	          <tr>
+	            <td>첨부</td>
+	            <td>
+	              <input type="file" name="file" value="<%= article.getFile() %>">
+	            </td>
+	          </tr>
+	        </table>
 
         <div>
           <a href="/jboard1/view.jsp?no=<%= article.getNo() %>" class="btnCancle">취소</a>

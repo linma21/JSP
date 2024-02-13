@@ -24,31 +24,14 @@
 	window.onload = function(){
 		// 원글 삭제
 		const btnDelete = document.querySelector('.btnDelete');
-		
-		if(btnDelete != null){
+		btnDelete.onclick = ()=>{
 			
-			btnDelete.onclick = ()=>{
-				
-				if(confirm('정말 삭제 하시겠습니까?')){
-					return true;
-				}else{
-					return false;
-				}
+			if(confirm('정말 삭제 하시겠습니까?')){
+				return true;
+			}else{
+				return false;
 			}
 		}
-		// 원글 수정
-		const btnModify = document.querySelector('.btnModify');
-		
-		if(btnModify != null){
-			btnModify.onclick = function(){
-				
-					if(confirm('수정 하시겠습니까?')){
-						return true;
-					}else{
-						return false;
-					}
-				}
-			}
 		
 		
 		// 댓글 작성 취소
@@ -75,39 +58,6 @@
 				}
 			}
 		});	
-		// 댓글 수정
-		const mod = document.querySelectorAll('.mod');
-		mod.forEach((item)=>{
-			item.onclick = function(e){
-				e.preventDefault();
-				
-				//this는 내가 선택(클릭)한 요소
-				//console.log(this.parentElement.previousElementSibling);
-				
-				if(this.innerText == '수정'){
-					// 수정모드 전환
-					this.innerText = '수정완료';
-					const textarea = this.parentElement.previousElementSibling;
-					textarea.readOnly = false;
-					textarea.style.background = 'white'
-					textarea.focus();
-				}else{
-					// 수정완료 클릭
-					// const form = this.parentNode.parentNode.parentNode;
-					// closest : 상위 Node에 가장 가까운 태그요소 선택
-					const form = this.closest('form');
-					form.submit();
-					
-					
-					// 수정모드 해제
-					this.innerText = '수정';
-					const textarea = this.parentElement.previousElementSibling;
-					textarea.readOnly = true;
-					textarea.style.background = 'transparent'
-				}
-				
-			}
-		});
 	}
 	
 </script>
@@ -141,7 +91,7 @@
 			<div>
 			<% if(sessUser != null && sessUser.getUid().equals(article.getWriter())){ %>
 				<a href="/jboard1/proc/deleteProc.jsp?no=<%= article.getNo() %>" class="btnDelete">삭제</a>
-				<a href="/jboard1/modify.jsp?no=<%= article.getNo() %>" class="btnModify">수정</a>
+				<a href="/jboard1/modify.jsp?no=<%= article.getNo() %>"class="btnModify">수정</a>
 				<% } %>
 				<a href="/jboard1/list.jsp" class="btnList">목록</a>
 			</div>
@@ -150,28 +100,24 @@
 		<section class="commentList">
 			<h3>댓글 목록</h3>
 			<%for(ArticleDTO comment : comments){ %>
-			<form action="/jboard1/proc/commentUpdate.jsp" method="post">
-				<input type="hidden" name="parent" value="<%= comment.getParent() %>">
-				<input type="hidden" name="no" value="<%= comment.getNo() %>">
-				<article class="comment">
-					<span>
-						<span><%= comment.getNick() %></span>
-						<span><%= comment.getRdate().substring(2, 10) %></span>
-					</span>	
-					<textarea name="content" readonly><%= comment.getContent() %></textarea>
-					
-					<% if(sessUser.getUid().equals(comment.getWriter())){ %>
-					<div>
-						<a href="/jboard1/proc/commentDelete.jsp?parent=<%= comment.getParent() %>&no=<%= comment.getNo() %>" class="del" >삭제</a>
-						<a href="#" class="mod">수정</a>
-					</div>
-					<% } %>
-				</article>
-			</form>
-			<% } %>
+			<article class="comment">
+				<span>
+					<span><%= comment.getNick() %></span>
+					<span><%= comment.getRdate().substring(2, 10) %></span>
+				</span>	
+				<textarea name="comment" readonly><%= comment.getContent() %></textarea>
+				
+				<% if(sessUser.getUid().equals(comment.getWriter())){ %>
+				<div>
+					<a href="/jboard1/proc/commentDelete.jsp?parent=<%= comment.getParent() %>&no=<%= comment.getNo() %>" class="del" >삭제</a>
+					<a href="/jboard1/commentModify.jsp?parent=<%= comment.getParent() %>&no=<%= comment.getNo() %>" class="modify">수정</a>
+				</div>
+				<% } %>
+			</article>
+			<%} %>
 			
 			<% if(comments.isEmpty()){ %>
-				<p class="empty">등록된 댓글이 없습니다.</p>
+			<p class="empty">등록된 댓글이 없습니다.</p>
 			<% } %>
 		</section>
 
