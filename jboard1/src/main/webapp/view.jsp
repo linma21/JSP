@@ -7,6 +7,9 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	String no = request.getParameter("no");
+	String searchType = request.getParameter("searchType");
+	String keyword = request.getParameter("keyword");
+	String pg = request.getParameter("pg");
 	
 	ArticleDAO dao = ArticleDAO.getInstance();
 	
@@ -17,6 +20,13 @@
 	
 	// 댓글 조회
 	List<ArticleDTO> comments = dao.selectComments(no);
+	
+	// 동적 파라미터 생성
+	String params ="pg="+ pg;
+	
+	if(searchType != null && keyword != null){
+		params += "&searchType="+searchType +"&keyword="+keyword+"&pg="+ pg;
+	}
 %>
 <%@ include file="./_header.jsp"%>
 <script>
@@ -140,10 +150,10 @@
 
 			<div>
 			<% if(sessUser != null && sessUser.getUid().equals(article.getWriter())){ %>
-				<a href="/jboard1/proc/deleteProc.jsp?no=<%= article.getNo() %>" class="btnDelete">삭제</a>
-				<a href="/jboard1/modify.jsp?no=<%= article.getNo() %>" class="btnModify">수정</a>
+				<a href="/jboard1/proc/deleteProc.jsp?no=<%= article.getNo()%>&<%= params %>" class="btnDelete">삭제</a>
+				<a href="/jboard1/modify.jsp?no=<%= article.getNo()%>&<%= params %>" class="btnModify">수정</a>
 				<% } %>
-				<a href="/jboard1/list.jsp" class="btnList">목록</a>
+				<a href="/jboard1/list.jsp?<%= params %>" class="btnList">목록</a>
 			</div>
 		</form>
 		<!-- 댓글 리스트 -->

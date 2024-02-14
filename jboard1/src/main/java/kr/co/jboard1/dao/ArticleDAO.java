@@ -39,7 +39,6 @@ public class ArticleDAO extends DBHelper {
 			psmt = conn.prepareStatement(SQL.SELECT_ARTICLE);
 			psmt.setString(1,no);
 			
-			System.out.println(psmt);
 			rs = psmt.executeQuery();
 			
 			if(rs.next()) {
@@ -69,7 +68,7 @@ public class ArticleDAO extends DBHelper {
 		List<ArticleDTO> articles = new ArrayList<>();
 		try {
 			conn = getConnection();
-			psmt = conn.prepareStatement(SQL.SELECT_ARTICLES);
+			psmt = conn.prepareStatement(SQL.SELECT_ARTICLES + SQL.SELECT_ARTICLES_ORDER_LIMIT);
 			psmt.setInt(1, start);
 			
 			rs = psmt.executeQuery();
@@ -90,6 +89,65 @@ public class ArticleDAO extends DBHelper {
 				article.setNick(rs.getString(12));
 				articles.add(article);
 			}
+			closeAll();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return articles;
+	}
+	public List<ArticleDTO> selectArticlesForSearch(String searchType, String keyword, int start) {
+	    
+	    List<ArticleDTO> articles = new ArrayList<>();
+	    
+	    // 동적 쿼리 생성 - StringBuilder 사용(String 의 불변성 때문)
+	    StringBuilder sql = new StringBuilder(SQL.SELECT_ARTICLES);
+	    
+	    if(searchType.equals("title")) {
+	        sql.append(SQL.SELECT_ARTICLES_WHERE_TITLE);
+	    } else if(searchType.equals("content")) {
+	    	sql.append(SQL.SELECT_ARTICLES_WHERE_CONTENT);
+	    } else if(searchType.equals("title_content")) {
+	    	sql.append(SQL.SELECT_ARTICLES_WHERE_TITLE_CONTENT);
+	    } else if(searchType.equals("writer")) {
+	    	sql.append(SQL.SELECT_ARTICLES_WHERE_WRITER);
+	    }
+	    sql.append(SQL.SELECT_ARTICLES_ORDER_LIMIT);
+	    
+		try {
+			conn = getConnection();
+			psmt = conn.prepareStatement(sql.toString());
+			
+			if(searchType.equals("title_content")) {
+				psmt.setString(1, "%" + keyword + "%");
+				psmt.setString(2, "%" + keyword + "%");
+				psmt.setInt(3, start);
+			}else {
+				psmt.setString(1, "%" + keyword + "%");
+				psmt.setInt(2, start);
+			}
+			
+			
+			System.out.println(psmt);
+			
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				ArticleDTO article = new ArticleDTO();
+				article.setNo(rs.getInt(1));
+				article.setParent(rs.getInt(2));
+				article.setComment(rs.getInt(3));
+				article.setCate(rs.getString(4));
+				article.setTitle(rs.getString(5));
+				article.setContent(rs.getString(6));
+				article.setFile(rs.getInt(7));
+				article.setHit(rs.getInt(8));
+				article.setWriter(rs.getString(9));
+				article.setRegip(rs.getString(10));
+				article.setRdate(rs.getString(11));
+				article.setNick(rs.getString(12));
+				articles.add(article);
+			}
+			
 			closeAll();
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -204,17 +262,42 @@ public class ArticleDAO extends DBHelper {
 		return comment;
 	}
 	
-	public int selectCountTotal() {
+	public int selectCountTotal(String searchType, String keyword) {
+		
 		int total = 0;
+		StringBuilder sql = new StringBuilder(SQL.SELECT_COUNT_TOTAL);
+	    
+		if(searchType != null && keyword != null) {
+			
+		    if(searchType.equals("title")) {
+		        sql.append(SQL.SELECT_ARTICLES_WHERE_TITLE);
+		    } else if(searchType.equals("content")) {
+		    	sql.append(SQL.SELECT_ARTICLES_WHERE_CONTENT);
+		    } else if(searchType.equals("title_content")) {
+		    	sql.append(SQL.SELECT_ARTICLES_WHERE_TITLE_CONTENT);
+		    } else if(searchType.equals("writer")) {
+		    	sql.append(SQL.SELECT_ARTICLES_WHERE_WRITER);
+		    }
+		}
+		
 		try {
 			conn = getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(SQL.SELECT_COUNT_TOTAL);
-			if(rs.next()) {
-				total = rs.getInt(1);
-				
+			psmt = conn.prepareStatement(sql.toString());
+			
+			if(searchType != null && keyword != null) {
+				if(searchType.equals("title_content")) {
+					psmt.setString(1, "%" + keyword + "%");
+					psmt.setString(2, "%" + keyword + "%");
+				}else{
+					psmt.setString(1, "%" + keyword + "%");
+				}
 			}
 			
+			rs = psmt.executeQuery();
+			
+			if(rs.next()) {
+				total = rs.getInt(1);
+			}
 			closeAll();
 			
 		}catch(Exception e) {

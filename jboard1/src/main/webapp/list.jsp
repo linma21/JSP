@@ -6,11 +6,15 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	String pg = request.getParameter("pg");
+	String searchType = request.getParameter("searchType");
+	String keyword = request.getParameter("keyword");
+	
 	//List<ArticleDTO> articles = ArticleDAO.getInstance().selectArticlesList();
 	ArticleDAO dao = ArticleDAO.getInstance();
 	
-	// 전체 페이지 갯수 (2560)
-	int total = dao.selectCountTotal();
+	
+	// 전체 페이지 갯수
+	int total = dao.selectCountTotal(searchType, keyword);
 	
 	//마지막 페이지 번호
 	int lastPageNum = 0;
@@ -39,35 +43,45 @@
 	}
 	// 페이지 시작 번호
 	int pageStartNum = total - start;
-	// 글조회
-	List<ArticleDTO> articles = dao.selectArticles(start);
+	
+	List<ArticleDTO> articles = null;
+	String params = "&pg="+ currentPg;
+	
+	if(searchType == null && keyword == null){
+		// 전체 글조회
+		articles = dao.selectArticles(start);
+	}else{
+		// 검색 조회
+		articles = dao.selectArticlesForSearch(searchType, keyword, start);
+		// 동적 파라미터 생성
+		params += "&searchType="+searchType +"&keyword="+keyword ;
+	}
+	
 %>
 <%@ include file="./_header.jsp"%>
 <script>
 	window.onload = function(){
 		//const searchForm = document.getElementByClassName('search')[0];
-		const btnSearch = document.search.submit;
-		btnSearch.onclick = ()=>{
-			
+		//const btnSearch = document.search.submit;
+		//btnSearch.onclick = ()=>{
 		}
-		
 	}
 </script>
 <main>
 	<section class="list">
-		<h3>글목록</h3>
-		<article>
-			<!-- 게시글 검색 -->
-			<form action="/jboard1/proc/searchProc.jsp" class="search" name="search">
+		<h3><a href="/jboard1/list.jsp">글목록</a></h3>
+		<!-- 게시글 검색 -->
+			<form action="/jboard1/list.jsp" class="search" name="search">
 				<select name="searchType">
 					<option value="title">제목</option>
 					<option value="content">내용</option>
-					<option value="title-content">제목+내용</option>
+					<option value="title_content">제목+내용</option>
 					<option value="writer">작성자</option>
 				</select>
 				<input type="text" name="keyword" placeholder="검색 키워드 입력">
-				<input type="submit" name="submit" value="검색">
+				<input type="submit" value="검색">
 			</form>
+		<article>
 			<table>
 				<tr>
 					<th>번호</th>
@@ -81,7 +95,7 @@
 				%>
 				<tr>
 					<td><%=pageStartNum-- %></td>
-					<td><a href="/jboard1/view.jsp?no=<%= article.getNo() %>"><%=article.getTitle() %></a>[<%=article.getComment()%>]</td>
+					<td><a href="/jboard1/view.jsp?no=<%= article.getNo() + params %>"><%=article.getTitle() %></a>[<%=article.getComment()%>]</td>
 					<td><%=article.getNick() %></td>
 					<td><%=article.getRdate().substring(2, 10) %></td>
 					<td><%=article.getHit() %></td>
