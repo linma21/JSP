@@ -3,6 +3,12 @@ package kr.co.jboard1.db;
 public class SQL {
 
 	public static final String SELECT_TERMS = "SELECT * FROM `terms`";
+	
+	public static final String SELECT_COUNT_USER = "SELECT COUNT(*) FROM `User` ";
+	public static final String WHERE_UID	 = "WHERE `uid`=?";
+	public static final String WHERE_NICK	 = "WHERE `nick`=?";
+	public static final String WHERE_HP		 = "WHERE `hp`=?";
+	public static final String WHERE_EMAIL	 = "WHERE `email`=?";
 
 	public static final String SELECT_USER_FOR_LOGIN = "SELECT * FROM `User` WHERE `uid`=? AND `pass`=SHA2(?, 256)";
 	
@@ -27,7 +33,7 @@ public class SQL {
 	public static final String SELECT_COMMENT = "SELECT * FROM `Article` WHERE `no` = ?";
 															
 	
-	public static final String SELECT_COUNT_TOTAL = "SELECT COUNT(*) FROM `Article` WHERE `parent` =0 ";
+	public static final String SELECT_COUNT_TOTAL = "SELECT COUNT(*) FROM `Article` AS a JOIN `User` AS b ON a.writer=b.uid WHERE `parent` =0 ";
 	
 	
 	public static final String INSERT_ARTICLE = "INSERT INTO `Article` SET "

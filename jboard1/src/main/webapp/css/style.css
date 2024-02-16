@@ -216,7 +216,7 @@ main > section {
 
 .register > form > table button {
   border: none;
-  vertical-align: -2px;
+  vertical-align: bottom;
 }
 
 .register > form > div {
