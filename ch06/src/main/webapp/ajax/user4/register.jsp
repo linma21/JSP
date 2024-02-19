@@ -3,65 +3,66 @@
 	<html>
 	<head>
 		<meta charset="UTF-8">
-		<title>AJAX::User3</title>
+		<title>User4::등록</title>
 		<script>
 			window.onload = function() {
 				
-				const formUser3 = document.getElementsByTagName('form')[0];
-				const btnSubmit = formUser3.submit;
+				const formUser4 = document.getElementsByTagName('form')[0];
+				const btnSubmit = formUser4.submit;
 				
-				btnSubmit.onclick= (e)=>{
+				btnSubmit.onclick = function(e) {
 					e.preventDefault();
 					
-					const uid	 = formUser3.uid.value;
-					const name	 = formUser3.name.value;
-					const birth	 = formUser3.birth.value;
-					const hp	 = formUser3.hp.value;
-					const addr	 = formUser3.addr.value;
+					const uid = formUser4.uid.value;
+					const name = formUser4.name.value;
+					const gender = formUser4.gender.value;
+					const age = formUser4.age.value;
+					const hp = formUser4.hp.value;
+					const addr = formUser4.addr.value;
 					
 					const jsonData = {
-				 		"uid"	:uid,	
-				 		"name"	:name,	
-				 		"birth"	:birth,	
-				 		"hp"	:hp,	
-				 		"addr"	:addr	
+							"uid" : uid,
+							"name" : name,
+							"gender" : gender,
+							"age" : age,
+							"hp" : hp,
+							"addr" : addr
 					};
 					
 					const strJson = JSON.stringify(jsonData);
-					console.log('strJson : '+strJson);
+					console.log('strJson : '+ strJson);
 					
-					fetch('./proc/postUser3.jsp', {
+					fetch('./proc/postUser4.jsp', {
 						method: 'POST',
 						headers: {
 							'Content-Type' : 'application/json'
 						},
-						body : strJson
+						body: strJson
 					})
-						.then(response=>response.json())
+						.then(response => response.json())
 						.then((data)=>{
+							console.log('data : '+ data);
 							if(data.result > 0){
 								alert('등록 성공!');
-								
 								location.href = './list.jsp';
 							}else{
-								alert('등록 실패!')
+								alert('등록 실패!');
 							}
 						})
-						.catch((err)=>{
-							console.log(err);
-						});
+						.catch((err)=>{console.log(err)});
 				}
+				
 				
 			}
 		</script>
 	</head>
 	<body>
-		<h3>User3 등록</h3>
+	<h3>user4 등록</h3>
 		<a href="/ch06/WEB-INF/3.ajax.jsp">처음으로</a>
 		<a href="./list.jsp">목록보기</a>
 		
 		<form action="#">
-			<table border ="1">
+			<table border="1">
 				<tr>
 					<td>아이디</td>
 					<td><input type="text" name="uid"></td>
@@ -71,8 +72,17 @@
 					<td><input type="text" name="name"></td>
 				</tr>
 				<tr>
-					<td>생년월일</td>
-					<td><input type="date" name="birth"></td>
+					<td>성별</td>
+					<td>
+						<select name="gender">
+							<option value="M">남성</option>						
+							<option value="F">여성</option>						
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>나이</td>
+					<td><input type="number" name="age"></td>
 				</tr>
 				<tr>
 					<td>휴대폰번호</td>

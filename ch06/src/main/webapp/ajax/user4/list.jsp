@@ -45,7 +45,7 @@
 								const params = url.split('?')[1];
 								const value = params.split('=')[1];
 								
-								fetch('./proc/delete.jsp?uid='+value)
+								fetch('./proc/deleteUser4.jsp?uid='+value)
 									.then(response=>response.json())
 									.then((data)=>{
 										console.log(data);

@@ -44,7 +44,7 @@
 				
 				const url = location.href;
 				const params = url.split('?')[1];
-				const value = url.split('=')[1];
+				const value = params.split('=')[1];
 				
 				console.log(value);
 				

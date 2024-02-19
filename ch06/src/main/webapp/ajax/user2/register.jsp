@@ -61,7 +61,7 @@
 	
 	<body>
 		<h3>user2 등록</h3>
-		<a href="../1.Jdbc.jsp">처음으로</a>
+		<a href="../3.ajax.jsp">처음으로</a>
 		<a href="./list.jsp">목록보기</a>
 		
 		<form action="#">
