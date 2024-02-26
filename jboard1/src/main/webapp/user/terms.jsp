@@ -1,5 +1,5 @@
 <%@page import="kr.co.jboard1.dao.UserDAO"%>
-<%@page import="kr.co.jboard1.db.SQL"%>
+<%@page import="kr.co.jboard2.db.SQL"%>
 <%@page import="javax.sql.DataSource"%>
 <%@page import="javax.naming.InitialContext"%>
 <%@page import="javax.naming.Context"%>
