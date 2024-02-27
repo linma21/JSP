@@ -2,7 +2,7 @@
 <%@page import="kr.co.jboard1.dto.UserDTO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
-<%@page import="kr.co.jboard2.db.SQL"%>
+<%@page import="kr.co.jboard1.db.SQL"%>
 <%@page import="javax.naming.InitialContext"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="javax.sql.DataSource"%>
