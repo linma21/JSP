@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,18 @@ public class LoginController extends HttpServlet{
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		UserDTO userDTO = new UserDTO();
 		String uid = req.getParameter("uid");
 		String pass = req.getParameter("pass");
-		userDTO.setUid(uid);
-		userDTO.setPass(pass);
+		
+		UserDTO userDTO = service.selectUserForLogin(uid, pass);
 		logger.debug(userDTO.toString());
-		service.selectUser(uid);
+		
+		if(userDTO != null) {
+			HttpSession session = req.getSession();
+			session.setAttribute("sessUser", userDTO);
+			resp.sendRedirect("/jboard2/list.do");
+		}else {
+			resp.sendRedirect("/jboard2/user/login.do?success=100");
+		}
 	}
 }

@@ -23,7 +23,10 @@ public class SQL {
 
 	public static final String SELECT_ARTICLES_ORDER_LIMIT = "ORDER BY `no` DESC LIMIT ?, 10";
 	
-	public static final String SELECT_ARTICLE = "SELECT * FROM `Article` WHERE `no` =?";
+	public static final String SELECT_ARTICLE = "SELECT a.*,b.oName,b.download FROM `Article` "
+																	+ "AS A LEFT OUTER JOIN `file` AS B "
+																	+ "ON A.no = B.ano "
+																	+ "WHERE `no` =?";
 	
 	public static final String SELECT_COMMENTS = "SELECT a.*, b.nick FROM `Article` "
 															+ "AS a JOIN `User` "
@@ -39,6 +42,7 @@ public class SQL {
 	public static final String INSERT_ARTICLE = "INSERT INTO `Article` SET "
 													+"`title` =?, "
 													+"`content` =?, "
+													+"`file` =?, "
 													+"`writer` =?, "
 													+"`regip` =?, "
 													+"`rdate` =NOW() ";
@@ -62,7 +66,11 @@ public class SQL {
 												+ "`regip` =?, "
 												+ "`rdate` =NOW() ";
 
-
+	public static final String INSERT_FILE = "INSERT INTO `File` SET "
+														+ "`ano`=?, "
+														+ "`oName`=?, "
+														+ "`sName`=?, "
+														+ "`rdate`=NOW() ";
 	
 	public static final String DELETE_ARTICLE = "DELETE FROM `Article` WHERE `no`=? OR `parent` =?";
 	public static final String DELETE_COMMENT = "DELETE FROM `Article` WHERE `no`=?";

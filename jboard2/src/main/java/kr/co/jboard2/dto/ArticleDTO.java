@@ -1,5 +1,7 @@
 package kr.co.jboard2.dto;
 
+import java.util.List;
+
 public class ArticleDTO {
 	private int no;
 	private int parent;
@@ -12,6 +14,25 @@ public class ArticleDTO {
 	private String writer;
 	private String regip;
 	private String rdate;
+
+	private String nick;
+	
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+	public String getNick() {
+		return nick;
+	}
+	// 추가 필드
+	private List<FileDTO> fileDTOs;
+	
+	public List<FileDTO> getFileDTOs() {
+		return fileDTOs;
+	}
+	public void setFileDTOs(List<FileDTO> fileDTOs) {
+		this.fileDTOs = fileDTOs;
+	}
+	
 	public int getNo() {
 		return no;
 	}

@@ -11,7 +11,7 @@
                     </tr>
                     <tr>
                         <th>파일</th>
-                        <td><a href="#">2020년 상반기 매출자료.xls</a>&nbsp;<span>7</span>회 다운로드</td>
+                        <td><a href="#">${articleDTO.}</a>&nbsp;<span>7</span>회 다운로드</td>
                     </tr>
                     <tr>
                         <th>내용</th>
