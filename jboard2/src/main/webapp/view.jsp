@@ -102,9 +102,10 @@ window.onload = function() {
 	
 	// 댓글 삭제 (동적 이벤트 처리)
 	document.addEventListener('click', function(e) {
-		e.preventDefault();
+		
 		
 		if(e.target.classList == 'remove'){
+			e.preventDefault();
 			const result = confirm('댓글을 삭제하시겠습니까?');
 			
 			if(result){
