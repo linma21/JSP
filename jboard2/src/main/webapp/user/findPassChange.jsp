@@ -30,8 +30,8 @@
                 </p>
 
                 <div>
-                    <a href="./login.html" class="btn btnCancel">취소</a>
-                    <a href="./login.html" class="btn btnNext">다음</a>
+                    <a href="/login.do" class="btn btnCancel">취소</a>
+                    <a href="/login.do" class="btn btnNext">다음</a>
                 </div>
             </section>
         </main>

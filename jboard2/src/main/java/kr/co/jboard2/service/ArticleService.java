@@ -94,8 +94,8 @@ public class ArticleService {
 	public void deleteArticle(String no) {
 		dao.deleteArticle(no);
 	}
-	public void deleteComment(String no, String parent) {
-		dao.deleteComment(no, parent);
+	public int deleteComment(String no, String parent) {
+		return dao.deleteComment(no, parent);
 	}
 	public ArticleDTO fileUpload(HttpServletRequest req) {
 		// 파일 경로 설정
@@ -209,5 +209,6 @@ public class ArticleService {
 	public int updateComment(ArticleDTO articleDTO) {
 		return dao.updateComment(articleDTO);
 	}
+	
 
 }

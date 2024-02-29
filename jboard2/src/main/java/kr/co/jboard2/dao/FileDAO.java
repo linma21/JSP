@@ -66,6 +66,7 @@ public class FileDAO extends DBHelper{
 		}
 		return fileDTO;
 	}
+	
 	public List<FileDTO> selectFiles () {
 		return null;
 	}
@@ -84,13 +85,14 @@ public class FileDAO extends DBHelper{
 			}
 		
 	}
-	public int deleteFile (String fno) {
+	public FileDTO deleteFile (String fno) {
 		// 삭제하기 전 파일의 게시글 번호를 반환 -> 게시글 file 값 -1 해야함
 		int ano = 0;
+		String sname = null;
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			psmtEtc1 = conn.prepareStatement(SQL.SELECT_FILE_FOR_ANO);
+			psmtEtc1 = conn.prepareStatement(SQL.SELECT_FILE_FOR_DELETE);
 			psmtEtc1.setString(1, fno);
 			logger.info("deleteFile : " + psmtEtc1);
 			
@@ -105,11 +107,12 @@ public class FileDAO extends DBHelper{
 			
 			if(rs.next()) {
 				ano = rs.getInt(1);
+				sname = rs.getString(2);
 			}
 			closeAll();
 		}catch (Exception e) {
 			logger.debug("deleteFile : "+e.getMessage());
 		}
-		return ano;
+		return new FileDTO(ano, sname);
 	}
 }

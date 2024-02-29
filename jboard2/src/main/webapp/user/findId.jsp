@@ -24,15 +24,14 @@
                         </tr>                        
                     </table>                                        
                 </form>
-                
                 <p>
                     회원가입시 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.<br>
                     인증번호를 입력 후 확인 버튼을 누르세요.
                 </p>
 
                 <div>
-                    <a href="./login.html" class="btn btnCancel">취소</a>
-                    <a href="./findIdResult.html" class="btn btnNext">다음</a>
+                    <a href="/login.do" class="btn btnCancel">취소</a>
+                    <a href="/findIdResult.do" class="btn btnNext">다음</a>
                 </div>
             </section>
         </main>

@@ -226,11 +226,11 @@ public class ArticleDAO extends DBHelper{
 		}
 	}
 	public int insertComment(ArticleDTO articleDTO) {
-		int result =0;
+		int pk =0;
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			psmt = conn.prepareStatement(SQL.INSERT_COMMENT);
+			psmt = conn.prepareStatement(SQL.INSERT_COMMENT, Statement.RETURN_GENERATED_KEYS);
 			psmt.setInt(1, articleDTO.getParent());
 			psmt.setString(2, articleDTO.getContent());
 			psmt.setString(3, articleDTO.getWriter());
@@ -239,15 +239,20 @@ public class ArticleDAO extends DBHelper{
 			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_COMMENT_PLUS);
 			psmtEtc1.setInt(1, articleDTO.getParent());
 			logger.info("insertComment : " + psmtEtc1);
-			result = psmt.executeUpdate();
+			psmt.executeUpdate();
 			psmtEtc1.executeUpdate();
+			// INSERT해서 부여 될 AUTO_INCREMENT PK값 가져오기
+			rs = psmt.getGeneratedKeys();
+			if(rs.next()) {
+				pk = rs.getInt(1);
+			}
 			conn.commit();
 			
 			closeAll();
 		}catch (Exception e) {
 			logger.debug("insertComment : "+ e.getMessage());
 		}
-		return result;
+		return pk;
 	}
 	public int updateComment(ArticleDTO articleDTO) {
 		int result =0;
@@ -264,7 +269,8 @@ public class ArticleDAO extends DBHelper{
 		}
 		return result;
 	}
-	public void deleteComment(String no, String parent) {
+	public int deleteComment(String no, String parent) {
+		int result =0;
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
@@ -272,9 +278,9 @@ public class ArticleDAO extends DBHelper{
 			psmt.setString(1, no);
 			logger.info("deleteArticle : " + psmt);
 			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_COMMENT_MINUS);
-			psmt.setString(1, parent);
+			psmtEtc1.setString(1, parent);
 			logger.info("deleteArticle : " + psmtEtc1);
-			psmt.executeUpdate();
+			result = psmt.executeUpdate();
 			psmtEtc1.executeUpdate();
 			conn.commit();
 			
@@ -282,5 +288,6 @@ public class ArticleDAO extends DBHelper{
 		}catch (Exception e) {
 			logger.debug("deleteArticle :" + e.getMessage());
 		}
+		return result;
 	}
 }

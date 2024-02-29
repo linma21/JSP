@@ -35,7 +35,7 @@ public class SQL {
 															+ "ORDER BY `no` DESC";
 	public static final String SELECT_COMMENT = "SELECT * FROM `Article` WHERE `no` = ?";
 	public static final String SELECT_FILE = "SELECT * FROM `File` WHERE `fno` = ?";
-	public static final String SELECT_FILE_FOR_ANO = "SELECT `ano` FROM `File` WHERE `fno`=?";												
+	public static final String SELECT_FILE_FOR_DELETE = "SELECT `ano`,`sname` FROM `File` WHERE `fno`=?";												
 	
 	public static final String SELECT_COUNT_TOTAL = "SELECT COUNT(*) FROM `Article` AS a JOIN `User` AS b ON a.writer=b.uid WHERE `parent` =0 ";
 	

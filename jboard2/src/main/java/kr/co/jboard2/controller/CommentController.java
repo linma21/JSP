@@ -33,9 +33,15 @@ public class CommentController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String no = req.getParameter("no");
 		String parent = req.getParameter("parent");
-		service.deleteComment(no, parent);
+		logger.debug("parent : "+parent);
+		int result = service.deleteComment(no, parent);
 		
-		resp.sendRedirect("/jboard2/view.do?no="+parent);
+		JsonObject json = new JsonObject();
+		json.addProperty("result", result);
+		
+		PrintWriter writer = resp.getWriter();
+		writer.print(json);
+		//resp.sendRedirect("/jboard2/view.do?no="+parent);
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,18 +61,17 @@ public class CommentController extends HttpServlet{
 		Gson gson = new Gson();
 		ArticleDTO articleDTO = gson.fromJson(requestBody.toString(), ArticleDTO.class);
 		articleDTO.setRegip(regip);
-		int result = service.insertComment(articleDTO);
+		
+		// 댓글 입력
+		int pk = service.insertComment(articleDTO);
 		int parent = articleDTO.getParent();
 		
 		// 결과 JSON 생성
 		JsonObject json = new JsonObject();
-		json.addProperty("result", result);
+		json.addProperty("pk", pk);
 		json.addProperty("parent", parent);
 		
-		// 결과 JSON 출력
-		//resp.setContentType("apllication/json");
-		//resp.getWriter().write(json.toString());
-		
+		// JSON 출력
 		PrintWriter writer = resp.getWriter();
 		writer.print(json);
 		

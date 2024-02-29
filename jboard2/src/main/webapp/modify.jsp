@@ -79,7 +79,7 @@ window.onload = function() {
             <section class="modify">
 
                 <form action="/jboard2/modify.do" method="post" enctype="multipart/form-data">
-                	<input type="text" name ="no" value="${articleDTO.no}">
+                	<input type="hidden" name ="no" value="${articleDTO.no}">
                     <table border="0">
                         <caption>글수정</caption>
                         <tr>

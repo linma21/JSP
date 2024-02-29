@@ -39,9 +39,6 @@ public class WriteController extends HttpServlet{
 		/*
 		 * multipart/form-data 는 getParameter 수신 불가
 		String title = req.getParameter("title");
-		String content = req.getParameter("content");
-		String writer = req.getParameter("writer");
-		String regip = req.getRemoteAddr();
 		*/
 		String regip = req.getRemoteAddr();
 		
