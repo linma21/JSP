@@ -1,5 +1,132 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="_header.jsp" %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+	window.onload = function() {
+		// 원글 삭제
+		const btnRemove = document.querySelector('.btnRemove');
+		if(btnRemove != null){
+			btnRemove.onclick = function() {
+				const result = confirm('게시글을 삭제하시겠습니까?');
+					
+				if(result){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+		// 원글 수정
+		const btnModify = document.querySelector('.btnModify');
+		if(btnModify != null){
+			btnModify.onclick = function() {
+				const result = confirm('게시글을 수정하시겠습니까?');
+					
+				if(result){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+		// 댓글 등록
+		
+		const btnSubmit = document.commentForm.submit;
+		const form = document.commentForm;
+		
+		btnSubmit.onclick = function(e) {
+			e.preventDefault();
+			
+			const parent = form.parent.value;
+			const writer = form.writer.value;
+			const content = form.content.value;
+			
+			const jsonData = {
+					"parent":parent,
+					"writer":writer,
+					"content":content
+			};
+			fetch('/jboard2/comment.do',{
+					method : 'POST',
+					headers : {"content-type" : "application/json"},
+					body : JSON.stringify(jsonData)
+			})
+				.then(response=>response.json())
+				.then((data)=>{
+					console.log("data : "+data);
+					if(data.result > 0){
+						alert(' 댓글 등록 성공!');
+						// 태그 동적 생성
+	
+					}
+				})
+				.catch((err)=>{
+					console.log(err);
+				})
+		}
+		
+		// 댓글 삭제
+		const remove = document.querySelectorAll('.remove');
+		remove.forEach((item)=>{
+			item.onclick = function() {
+				const result = confirm('댓글을 삭제하시겠습니까?');
+				
+				if(result){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		});
+		// 댓글 수정
+		const modify = document.querySelectorAll('.modify');
+		modify.forEach((item)=>{
+			item.onclick = function(e) {
+				e.preventDefault();
+				if(this.innerText == '수정'){
+					
+					this.innerText = '수정완료';
+					const textarea = this.parentElement.previousElementSibling;
+					textarea.readOnly = false;
+					textarea.style.background = 'white';
+					textarea.focus();
+				}else{
+					const form = this.closest('form');
+					//form.submit();
+					const no	  = form.no.value;
+					const parent  = form.parent.value;
+					const content = form.content.value;
+					
+					const jsonData = {
+						"no"	 :no,
+						"parent" :parent,
+						"content":content
+					};
+					
+					$.ajax ({
+					    method: 'POST',
+					    url   : '/jboard2/commentModify.do',
+					    data  : jsonData,
+					    success: function(data){
+					        console.log('data : ' + data);
+					        
+					        if(data.result > 0){
+					            alert('수정 성공!');
+					        }
+					    }
+					});
+
+					
+					this.innerText = '수정';
+					const textarea = this.parentElement.previousElementSibling;
+					textarea.readOnly = true;
+					textarea.style.background = '#f9f9f9';
+				}
+			}
+		});
+	}
+</script>
         <main id="board">
             <section class="view">
                 
@@ -7,52 +134,78 @@
                     <caption>글보기</caption>
                     <tr>
                         <th>제목</th>
-                        <td><input type="text" name="title" value="제목입니다." readonly/></td>
+                        <td><input type="text" name="title" value="${articleDTO.title}" readonly/></td>
                     </tr>
+                    <c:if test="${articleDTO.file > 0}">
                     <tr>
                         <th>파일</th>
-                        <td><a href="#">${articleDTO.}</a>&nbsp;<span>7</span>회 다운로드</td>
+                        <td>
+	                        <c:forEach var="file" items="${articleDTO.fileDTOs}">
+	                       	 	<p><a href="/jboard2/fileDownload.do?fno=${file.fno}">${file.oName}</a>&nbsp;<span>${file.download}</span>회 다운로드</p>
+	                       	</c:forEach> 	
+                        </td>
                     </tr>
+                    </c:if>
                     <tr>
                         <th>내용</th>
                         <td>
-                            <textarea name="content" readonly>내용 샘플입니다.</textarea>
+                            <textarea name="content" readonly>${articleDTO.content}</textarea>
                         </td>
                     </tr>                    
                 </table>
                 
                 <div>
-                    <a href="#" class="btn btnRemove">삭제</a>
-                    <a href="./modify.html" class="btn btnModify">수정</a>
-                    <a href="./list.html" class="btn btnList">목록</a>
+                	<c:if test="${articleDTO.writer == sessionScope.sessUser.uid}">
+	                    <a href="/jboard2/delete.do?no=${articleDTO.no}" class="btn btnRemove">삭제</a>
+	                    <a href="/jboard2/modify.do?no=${articleDTO.no}" class="btn btnModify">수정</a>
+                    </c:if>
+                    <a href="/jboard2/list.do" class="btn btnList">목록</a>
                 </div>
 
                 <!-- 댓글목록 -->
-                <section class="commentList">
-                    <h3>댓글목록</h3>                   
+                <c:if test="${!empty comments}">
+				    <section class="commentList">
+				        <h3>댓글목록</h3> 
+				        <c:forEach var="comment" items="${comments}">
+				        	<form action="#">
+				        	<input type="hidden" name="no" value="${comment.no}">
+				        	<input type="hidden" name="parent" value="${comment.parent}">
+					            <article>
+					                <span class="nick">${comment.nick}</span>
+					                <span class="date">${comment.rdate.substring(0, 10)}</span>
+					                <textarea class="content" name="content" readonly >${comment.content}</textarea>
+					                <c:if test="${comment.writer == sessionScope.sessUser.uid}">                        
+					                    <div>
+					                        <a href="#" class="remove">삭제</a>
+					                        <a href="#" class="modify">수정</a>
+					                    </div>
+					                </c:if>
+					            </article>
+				            </form>
+				        </c:forEach>
+				    </section>
+				</c:if>
+				
+				<c:if test="${empty comments}">
+				    <section class="commentList">
+				        <h3>댓글목록</h3>
+				        <article>
+				            <p class="empty">등록된 댓글이 없습니다.</p>
+				        </article>
+				    </section>
+				</c:if>
 
-                    <article>
-                        <span class="nick">길동이</span>
-                        <span class="date">20-05-20</span>
-                        <p class="content">댓글 샘플 입니다.</p>                        
-                        <div>
-                            <a href="#" class="remove">삭제</a>
-                            <a href="#" class="modify">수정</a>
-                        </div>
-                    </article>
-
-                    <p class="empty">등록된 댓글이 없습니다.</p>
-
-                </section>
 
                 <!-- 댓글쓰기 -->
                 <section class="commentForm">
                     <h3>댓글쓰기</h3>
-                    <form action="#">
-                        <textarea name="content">댓글내용 입력</textarea>
+                    <form name ="commentForm" action="#"  method="post">
+                    	<input type="hidden" name ="parent" value="${articleDTO.no}">
+                    	<input type="hidden" name ="writer" value="${sessionScope.sessUser.uid}">
+                        <textarea name="content" placeholder="댓글내용 입력"></textarea>
                         <div>
                             <a href="#" class="btn btnCancel">취소</a>
-                            <input type="submit" value="작성완료" class="btn btnComplete"/>
+                            <input type="submit" name="submit" value="작성완료" class="btn btnComplete"/>
                         </div>
                     </form>
                 </section>

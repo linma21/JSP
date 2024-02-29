@@ -32,12 +32,84 @@ public class FileDAO extends DBHelper{
 			logger.error("insertFile :" + e.getMessage());
 		}
 	}
-	public FileDTO selectFile (int fno) {
-		return null;
+	public FileDTO selectFile (String fno) {
+		FileDTO fileDTO = null;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			
+			psmt = conn.prepareStatement(SQL.SELECT_FILE);
+			psmt.setString(1, fno);
+			logger.info("selectFile : " + psmt);
+			
+			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_FILE_DOWNLOAD);
+			psmtEtc1.setString(1, fno);
+			logger.info("selectFile : " + psmtEtc1);
+			
+			rs = psmt.executeQuery();
+			psmtEtc1.executeUpdate();
+			
+			conn.commit();
+			
+			if(rs.next()) {
+				fileDTO = new FileDTO();
+				fileDTO.setFno(rs.getInt(1));
+				fileDTO.setAno(rs.getInt(2));
+				fileDTO.setoName(rs.getString(3));
+				fileDTO.setsName(rs.getString(4));
+				fileDTO.setDownload(rs.getInt(5));
+				fileDTO.setRdate(rs.getString(6));
+			}
+			closeAll();
+		} catch (Exception e) {
+			logger.debug("selectFile : "+e.getMessage());
+		}
+		return fileDTO;
 	}
 	public List<FileDTO> selectFiles () {
 		return null;
 	}
 	public void updateFile (FileDTO fileDTO) {}
-	public void deleteFile (int fno) {}
+	public void deleteArticleFile (String ano) {
+			try {
+				conn = getConnection();
+				psmt = conn.prepareStatement(SQL.DELETE_ARTICLE_FILE);
+				psmt.setString(1, ano);
+				logger.info("deleteArticleFile : " + psmt);
+				psmt.executeUpdate();
+				
+				closeAll();
+			}catch (Exception e) {
+				logger.debug("deleteArticleFile : "+e.getMessage());
+			}
+		
+	}
+	public int deleteFile (String fno) {
+		// 삭제하기 전 파일의 게시글 번호를 반환 -> 게시글 file 값 -1 해야함
+		int ano = 0;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			psmtEtc1 = conn.prepareStatement(SQL.SELECT_FILE_FOR_ANO);
+			psmtEtc1.setString(1, fno);
+			logger.info("deleteFile : " + psmtEtc1);
+			
+			psmt = conn.prepareStatement(SQL.DELETE_FILE);
+			psmt.setString(1, fno);
+			logger.info("deleteFile : " + psmt);
+			
+			rs = psmtEtc1.executeQuery();
+			psmt.executeUpdate();
+			
+			conn.commit();
+			
+			if(rs.next()) {
+				ano = rs.getInt(1);
+			}
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("deleteFile : "+e.getMessage());
+		}
+		return ano;
+	}
 }

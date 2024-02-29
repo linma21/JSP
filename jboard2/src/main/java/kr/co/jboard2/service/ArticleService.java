@@ -1,12 +1,17 @@
 package kr.co.jboard2.service;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -33,8 +38,11 @@ public class ArticleService {
 	public int insertArticle(ArticleDTO articleDTO) {
 		return dao.insertArticle(articleDTO);
 	}
-	public List<ArticleDTO> selectArticle(String no) {
+	public ArticleDTO selectArticle(String no) {
 		return dao.selectArticle(no);
+	}
+	public List<ArticleDTO> selectComments(String no) {
+		return dao.selectComments(no);
 	}
 	public List<ArticleDTO> selectArticles(int start) {
 		return dao.selectArticles(start);
@@ -80,15 +88,21 @@ public class ArticleService {
 	public void updateArticle(ArticleDTO articleDTO) {
 		dao.updateArticle(articleDTO);
 	}
-	public void deleteArticle(int no) {
+	public void updateArticleForFileCount(int ano) {
+		dao.updateArticleForFileCount(ano);
+	}
+	public void deleteArticle(String no) {
 		dao.deleteArticle(no);
+	}
+	public void deleteComment(String no, String parent) {
+		dao.deleteComment(no, parent);
 	}
 	public ArticleDTO fileUpload(HttpServletRequest req) {
 		// 파일 경로 설정
 		ServletContext ctx = req.getServletContext();
 		String uploadPath = ctx.getRealPath("/uploads");
 		
-		// 파일 업로드 처리 객페 생성
+		// 파일 업로드 처리 객체 생성
 		FileItemFactory factory = new DiskFileItemFactory();
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		
@@ -142,11 +156,12 @@ public class ArticleService {
 						articleDTO.setContent(fieldValue);
 					}else if(fieldName.equals("writer")) {
 						articleDTO.setWriter(fieldValue);
+					}else if(fieldName.equals("no")) {
+						articleDTO.setNo(fieldValue);
 					}
 				}
 			}
 			articleDTO.setFile(count);
-			
 		} catch (Exception e) {
 			logger.error("fileUpload : "+e.getMessage());
 		}
@@ -154,7 +169,45 @@ public class ArticleService {
 		articleDTO.setFileDTOs(fileDTOs);
 		return articleDTO;
 	}
-	public void fileDownload() {
+	public void fileDownload(HttpServletRequest req, HttpServletResponse resp, FileDTO fileDTO) {
 		
+		try {
+			// response 헤더 설정
+			resp.setContentType("application/octet-stream");
+			resp.setHeader("Content-Disposition", "attachment; filename="+URLEncoder.encode(fileDTO.getoName(), "utf-8"));
+			resp.setHeader("Content-Transfer-Encoding", "binary");
+			resp.setHeader("Pragma", "no-cache");
+			resp.setHeader("Cache-Control", "private");
+			
+			// response 파일 스트림 작업
+			ServletContext ctx = req.getServletContext();
+			String uploadsPath = ctx.getRealPath("/uploads");
+			
+			File file = new File(uploadsPath + File.separator + fileDTO.getsName());
+			
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+			BufferedOutputStream bos = new BufferedOutputStream(resp.getOutputStream());
+			
+			while(true){
+				int data = bis.read();
+				if(data == -1){
+					break;
+				}
+				bos.write(data);
+			}
+			
+			bos.close();
+			bis.close();
+			
+		}catch (Exception e) {
+			logger.error("fileDownload : " + e.getMessage());
+		}
 	}
+	public int insertComment(ArticleDTO articleDTO) {
+		return dao.insertComment(articleDTO);
+	}
+	public int updateComment(ArticleDTO articleDTO) {
+		return dao.updateComment(articleDTO);
+	}
+
 }

@@ -14,7 +14,7 @@
                     <input type="submit" value="검색">
                 </form>
                 
-                <table border="0">
+                <table>
                     <caption>글목록</caption>
                     <tr>
                         <th>번호</th>
@@ -28,7 +28,7 @@
 		                <td>${pageStartNum = pageStartNum - 1}</td>
 		                <td><a href="./view.do?no=${article.no}">${article.title}[${article.comment}]</a></td>
 		                <td>${article.nick}</td>
-		                <td>${article.rdate}</td>
+		                <td>${article.rdate.substring(0, 10)}</td>
 		                <td>${article.hit}</td>
 		            </tr>
 	            </c:forEach>

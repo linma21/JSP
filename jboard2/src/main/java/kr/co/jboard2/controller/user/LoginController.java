@@ -26,6 +26,10 @@ public class LoginController extends HttpServlet{
 	}
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String success = req.getParameter("success");
+		
+		req.setAttribute("success", success);
+		
 		RequestDispatcher dispatcher = req.getRequestDispatcher("/user/login.jsp");
 		dispatcher.forward(req, resp);
 	}
@@ -35,7 +39,6 @@ public class LoginController extends HttpServlet{
 		String pass = req.getParameter("pass");
 		
 		UserDTO userDTO = service.selectUserForLogin(uid, pass);
-		logger.debug(userDTO.toString());
 		
 		if(userDTO != null) {
 			HttpSession session = req.getSession();

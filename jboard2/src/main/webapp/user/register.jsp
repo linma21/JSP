@@ -55,8 +55,8 @@ function postCode() {
             <section class="register">
 
                 <form action="/jboard2/user/register.do" name="formRegister" method="post">
+               	 	<input type="hidden" name="sms" value="${sessionScope.sms}">
                     <table border="1">
-                    <input type="hidden" name="sms" value="${sessionScope.sms}">
                         <caption>사이트 이용정보 입력</caption>
                         <tr>
                             <td>아이디</td>

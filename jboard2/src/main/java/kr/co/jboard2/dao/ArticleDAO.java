@@ -1,6 +1,5 @@
 package kr.co.jboard2.dao;
 
-import java.io.File;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,45 +45,93 @@ public class ArticleDAO extends DBHelper{
 			logger.debug("insertArticle : "+e.getMessage());
 		}
 		return pk;
-		
 	}
-	public List<ArticleDTO> selectArticle(String no) {
+	public ArticleDTO selectArticle(String no) {
 		
-		List<ArticleDTO> articles = new ArrayList<>();
+		ArticleDTO articleDTO = null;
 		List<FileDTO> files = new ArrayList<>();
-		FileDTO fileDTO = new FileDTO();
+		
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false);
+			
 			psmt = conn.prepareStatement(SQL.SELECT_ARTICLE);
 			psmt.setString(1, no);
+			logger.info("selectArticle : " + psmt);
+			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_HIT_COUNT);
+			psmtEtc1.setString(1, no);
+			logger.info("selectArticle : " + psmtEtc1);
 			rs = psmt.executeQuery();
+			psmtEtc1.executeUpdate();
+			
+			conn.commit();
 			while(rs.next()) {
-				ArticleDTO articleDTO = new ArticleDTO();
-				articleDTO.setNo(rs.getInt(1));
-				articleDTO.setParent(rs.getInt(2));
-				articleDTO.setComment(rs.getInt(3));
-				articleDTO.setCate(rs.getString(4));
-				articleDTO.setTitle(rs.getString(5));
-				articleDTO.setContent(rs.getString(6));
-				articleDTO.setFile(rs.getInt(7));
-				articleDTO.setHit(rs.getInt(8));
-				articleDTO.setWriter(rs.getString(9));
-				articleDTO.setRegip(rs.getString(10));
-				articleDTO.setRdate(rs.getString(11));
-				articleDTO.setNick(rs.getString(12));
-				fileDTO.setoName(rs.getString(13));
-				fileDTO.setDownload(rs.getInt(14));
 				
+				// 글 하나당 파일이 여러개일 경우 글객체(ArticleDTO)는 여러개 생성할 필요가 없기 때문에 1개만 생성 되도록 조건처리
+				if(articleDTO == null) {
+					articleDTO = new ArticleDTO();
+					articleDTO.setNo(rs.getInt(1));
+					articleDTO.setParent(rs.getInt(2));
+					articleDTO.setComment(rs.getInt(3));
+					articleDTO.setCate(rs.getString(4));
+					articleDTO.setTitle(rs.getString(5));
+					articleDTO.setContent(rs.getString(6));
+					articleDTO.setFile(rs.getInt(7));
+					articleDTO.setHit(rs.getInt(8));
+					articleDTO.setWriter(rs.getString(9));
+					articleDTO.setRegip(rs.getString(10));
+					articleDTO.setRdate(rs.getString(11));
+				}
+				
+				FileDTO fileDTO = new FileDTO();
+				fileDTO.setFno(rs.getInt(12));
+				fileDTO.setAno(rs.getInt(13));
+				fileDTO.setoName(rs.getString(14));
+				fileDTO.setsName(rs.getString(15));
+				fileDTO.setDownload(rs.getInt(16));
+				fileDTO.setRdate(rs.getString(17));
 				files.add(fileDTO);
 			}
 			
-			
+			articleDTO.setFileDTOs(files);
 			
 			closeAll();
-		} catch (Exception e) {
-			logger.debug("selectArticle : " + e.getMessage());
+			
+		}catch (Exception e) {
+			logger.error("selectArticle : " + e.getMessage());
 		}
-		return articles;
+		
+		return articleDTO;
+	}
+	public List<ArticleDTO> selectComments(String no) {
+		List<ArticleDTO> comments = new ArrayList<>();
+		try {
+			conn = getConnection();
+			psmt = conn.prepareStatement(SQL.SELECT_COMMENTS);
+			psmt.setString(1, no);
+			logger.info("selectComment : " + psmt);
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				ArticleDTO articleDTO = new ArticleDTO();
+					articleDTO.setNo(rs.getInt(1));
+					articleDTO.setParent(rs.getInt(2));
+					articleDTO.setComment(rs.getInt(3));
+					articleDTO.setCate(rs.getString(4));
+					articleDTO.setTitle(rs.getString(5));
+					articleDTO.setContent(rs.getString(6));
+					articleDTO.setFile(rs.getInt(7));
+					articleDTO.setHit(rs.getInt(8));
+					articleDTO.setWriter(rs.getString(9));
+					articleDTO.setRegip(rs.getString(10));
+					articleDTO.setRdate(rs.getString(11));
+					articleDTO.setNick(rs.getString(12));
+					comments.add(articleDTO);
+			}
+			closeAll();
+		} catch (Exception e) {
+			logger.debug("selectComment : " + e.getMessage());
+		}
+		return comments;
 	}
 	public List<ArticleDTO> selectArticles(int start) {
 		List<ArticleDTO> articleDTOs = new ArrayList<>();
@@ -133,6 +180,107 @@ public class ArticleDAO extends DBHelper{
 		}
 		return total;
 	}
-	public void updateArticle(ArticleDTO articleDTO) {}
-	public void deleteArticle(int no) {}
+	public void updateArticle(ArticleDTO articleDTO) {
+		logger.info("updateArticle : " + articleDTO.toString());
+		try {
+			conn = getConnection();
+			
+			psmt = conn.prepareStatement(SQL.UPDATE_ARTICLE);
+			psmt.setString(1, articleDTO.getTitle());
+			psmt.setString(2, articleDTO.getContent());
+			psmt.setInt(3, articleDTO.getFile());
+			psmt.setInt(4, articleDTO.getNo());
+			logger.info("updateArticle : " + psmt);
+			psmt.executeUpdate();
+			
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("updateArticle : "+e.getMessage());
+		}
+	}
+	public void updateArticleForFileCount(int ano) {
+		try {
+			conn = getConnection();
+			
+			psmt = conn.prepareStatement(SQL.UPDATE_ARTICLE_FOR_FILE_COUNT);
+			psmt.setInt(1, ano);
+			logger.info("updateArticleForFileCount : " + psmt);
+			psmt.executeUpdate();
+			
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("updateArticleForFileCount : "+e.getMessage());
+		}
+	}
+	public void deleteArticle(String no) {
+		try {
+			conn = getConnection();
+			psmt = conn.prepareStatement(SQL.DELETE_ARTICLE);
+			psmt.setString(1, no);
+			psmt.setString(2, no);
+			logger.info("deleteArticle : " + psmt);
+			psmt.executeUpdate();
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("deleteArticle :" + e.getMessage());
+		}
+	}
+	public int insertComment(ArticleDTO articleDTO) {
+		int result =0;
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			psmt = conn.prepareStatement(SQL.INSERT_COMMENT);
+			psmt.setInt(1, articleDTO.getParent());
+			psmt.setString(2, articleDTO.getContent());
+			psmt.setString(3, articleDTO.getWriter());
+			psmt.setString(4, articleDTO.getRegip());
+			logger.info("insertComment : " + psmt);
+			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_COMMENT_PLUS);
+			psmtEtc1.setInt(1, articleDTO.getParent());
+			logger.info("insertComment : " + psmtEtc1);
+			result = psmt.executeUpdate();
+			psmtEtc1.executeUpdate();
+			conn.commit();
+			
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("insertComment : "+ e.getMessage());
+		}
+		return result;
+	}
+	public int updateComment(ArticleDTO articleDTO) {
+		int result =0;
+		try {
+			conn = getConnection();
+			psmt = conn.prepareStatement(SQL.UPDATE_COMMENT);
+			psmt.setString(1, articleDTO.getContent());
+			psmt.setInt(2, articleDTO.getNo());
+			logger.info("updateComment : " + psmt);
+			result = psmt.executeUpdate();
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("updateComment : "+ e.getMessage());
+		}
+		return result;
+	}
+	public void deleteComment(String no, String parent) {
+		try {
+			conn = getConnection();
+			conn.setAutoCommit(false);
+			psmt = conn.prepareStatement(SQL.DELETE_COMMENT);
+			psmt.setString(1, no);
+			logger.info("deleteArticle : " + psmt);
+			psmtEtc1 = conn.prepareStatement(SQL.UPDATE_COMMENT_MINUS);
+			psmt.setString(1, parent);
+			logger.info("deleteArticle : " + psmtEtc1);
+			psmt.executeUpdate();
+			psmtEtc1.executeUpdate();
+			conn.commit();
+			
+			closeAll();
+		}catch (Exception e) {
+			logger.debug("deleteArticle :" + e.getMessage());
+		}
+	}
 }
